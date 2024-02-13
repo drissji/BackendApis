@@ -4,6 +4,8 @@ package net.todoapp.todoapp.controller;
 import net.todoapp.todoapp.service.ToDoAppService;
 import net.todoapp.todoapp.Entity.Todo;
 import org.bson.types.ObjectId;
+import org.springframework.boot.autoconfigure.security.saml2.Saml2RelyingPartyProperties;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/todoapp")
 public class AppController {
 
 
@@ -57,6 +59,20 @@ public class AppController {
         toDoAppService.modifyTodo(id,todo.getTitle(),todo.getDescription(),todo.getCompleted(),todo.getDueDate());
     }
 
+    @GetMapping("/sort")
+    public List<Todo> getSortedTodo(){
+       return toDoAppService.getSortedTodoList();
+    }
+
+    @GetMapping("/findtitle/{term}")
+    public List<Todo> findTitle(@PathVariable String term){
+        return toDoAppService.findTitleContaining(term);
+    }
+
+    @GetMapping("/findtodo/{title}/{status}")
+    public List<Todo> findTodo(@PathVariable String title,@PathVariable boolean status){
+        return toDoAppService.findTodo(title,status);
+    }
 
 
 }

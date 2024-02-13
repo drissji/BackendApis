@@ -3,6 +3,7 @@ package net.todoapp.todoapp.service;
 import net.todoapp.todoapp.Entity.Todo;
 import net.todoapp.todoapp.repository.ToDoAppRepository;
 import org.bson.types.ObjectId;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -102,6 +103,7 @@ public class ToDoAppService {
     }*/
 
 
+    //Modify TODO
     public void modifyTodo(ObjectId id, String title, String description,boolean status, Date date) {
 
         Optional<Todo> todo = toDoAppRepository.findById(id.toString());
@@ -116,4 +118,22 @@ public class ToDoAppService {
         );
 
     }
+
+    //SORT TODO
+    public List<Todo> getSortedTodoList(){
+       return toDoAppRepository.findAll(Sort.by(Sort.Direction.ASC,"dueDate"));
+    }
+
+
+    //Find Containing a word
+    public List<Todo> findTitleContaining(String term){
+       return toDoAppRepository.findByTitleContaining(term);
+    }
+
+    public List<Todo> findTodo(String title,boolean status){
+        return toDoAppRepository.findByTitleAndCompleted(title,status);
+    }
+
+
+
 }
