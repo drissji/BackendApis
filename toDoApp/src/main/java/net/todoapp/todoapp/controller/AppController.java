@@ -3,14 +3,15 @@ package net.todoapp.todoapp.controller;
 
 import net.todoapp.todoapp.service.ToDoAppService;
 import net.todoapp.todoapp.Entity.Todo;
+import org.bson.types.ObjectId;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
+import java.util.List;
+import java.util.Optional;
+
+@RestController
 @RequestMapping("/api")
 public class AppController {
 
@@ -23,7 +24,6 @@ public class AppController {
 
     @PostMapping("/insert")
     public ResponseEntity<HttpStatus> addTodo(@RequestBody Todo todo){
-
         try {
             return toDoAppService.addTodo(todo);
         }catch (Exception e){
@@ -32,32 +32,30 @@ public class AppController {
 
     }
 
-    /*
+    @PostMapping("/delete/{id}")
+    public ResponseEntity<String> deleteTodo(@PathVariable ObjectId id){
+        return toDoAppService.deleteTodo(id);
+    }
+
     @GetMapping("/todolist")
-    public String getToDoList(){
-
-
+    public List<Todo> getToDoList(){
+            return toDoAppService.getTodoList();
     }
 
-    @PostMapping("/todo")
-    public String getTodoById(@RequestBody Todo id){
-
+    @GetMapping("/todo/{id}")
+    public  Optional<Optional<Todo>> getTodoById(@PathVariable ObjectId id){
+        return toDoAppService.getToDoById(id);
     }
 
-
-    @PostMapping("/markascompleted")
-    public String markAsComplete(@RequestBody Todo id){
-
+    @PostMapping("/completed/{id}/{status}")
+    public Optional<Todo> markAsComplete(@PathVariable ObjectId id, @PathVariable boolean status){
+        return toDoAppService.modifyStatus(id,status);
     }
 
-
-    @PostMapping("/update")
-    public String markAsComplete(@RequestBody Todo todo){
-
-    }*/
-
-
-
+    @PutMapping("/update/{id}")
+    public void markAsComplete(@PathVariable ObjectId id, @RequestBody Todo todo){
+        toDoAppService.modifyTodo(id,todo.getTitle(),todo.getDescription(),todo.getCompleted(),todo.getDueDate());
+    }
 
 
 
