@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo App</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+
+        h1 {
+            color: #0c3353;
+            padding: 5px;
+        }
+
+        .test{
+            background: #cccccc;
+            color: white;
+            box-shadow: #0c3353;
+            height: 15px;
+            border-radius: 2px;
+        }
+
+        .search-bar {
+            width: 70%;
+            padding: 8px;
+            margin-bottom: 20px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .filter-button {
+            background-color: #6e63a3;
+            color: #fff;
+            padding: 10px 15px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .filter-button:hover {
+            background-color: #bd86d9;
+        }
+
+        .todo-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .todo-item {
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .no-todos-message {
+            color: #354775;
+            font-style: italic;
+        }
+
+        /* Apply color classes */
+        .color1 { color: #0c3353; }
+        .color2 { color: #354775; }
+        .color3 { color: white; }
+        .color4 { color: #bd86d9; }
+        .color5 { color: #ffb2ff; }
+
+
+        .task-container {
+            border: 1px solid #ccc;
+            padding: 5px;
+            margin-bottom: 10px;
+            white-space: pre-wrap; /* Adjust the white-space property */
+        }
+
+        .task-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #0c3353;
+        }
+
+        .task-description {
+            font-size: 14px;
+            color: #354775;
+            margin-bottom: 5px;
+        }
+
+        .task-status {
+            font-size: 14px;
+            color: #6e63a3;
+            margin-bottom: 5px;
+        }
+
+        .task-due-date {
+            font-size: 14px;
+            color: #bd86d9;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1 class="color1">Todo App</h1>
+   <!-- <input type="text" class="search-bar" placeholder="Search..." id="searchInput">
+    <button class="filter-button color3" onclick="search()">Filter</button> -->
+
+    <form th:action="@{/search}" method="get">
+        <input type="text"  class="search-bar" placeholder="Search..." name="keyword" th:value="${keyword}">
+        <button type="submit" class="filter-button color3" >Search</button>
+        <button type="submit" class="filter-button color3" >Reset</button>
+    </form>
+
+    <div th:if="${#lists.isEmpty(tasks)}">
+        <p class="no-tasks-message">No tasks to display.</p>
+    </div>
+
+    <div th:if="${not #lists.isEmpty(tasks)}">
+        <div th:each="task : ${tasks}" class="task-container">
+            <div>
+                <span th:text="${task.title}" class="task-title">Title</span>
+                <span th:text="${task.description}" class="task-description">Description</span>
+                <!--<span th:text="${task.completed}" class="task-status">Status</span>-->
+                <input type="checkbox">
+                <span>
+                    due to :<span th:text="${task.dueDate}" class="task-due-date">Due Date</span>
+                </span>
+                <button class="filter-button color3">Modify</button> <button class="filter-button color3">Delete</button>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+</body>
+</html>

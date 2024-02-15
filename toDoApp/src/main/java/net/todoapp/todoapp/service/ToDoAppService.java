@@ -131,7 +131,7 @@ public class ToDoAppService {
     }
 
     public List<Todo> findTodo(String title,boolean status){
-        return toDoAppRepository.findByTitleAndCompleted(title,status);
+        return toDoAppRepository.findByTitleAndIsCompleted(title,status);
     }
 
 

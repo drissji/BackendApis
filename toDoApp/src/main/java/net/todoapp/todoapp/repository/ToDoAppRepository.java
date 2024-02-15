@@ -8,6 +8,6 @@ import java.util.List;
 public interface ToDoAppRepository extends MongoRepository<Todo,String> {
 
      List<Todo> findByTitleContaining(String word);
-     List<Todo> findByTitleAndCompleted(String title,boolean completed);
+     List<Todo> findByTitleAndIsCompleted(String title,boolean completed);
 
 }
