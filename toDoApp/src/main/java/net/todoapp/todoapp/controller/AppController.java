@@ -1,22 +1,20 @@
 package net.todoapp.todoapp.controller;
 
 
-import net.todoapp.todoapp.service.ToDoAppService;
 import net.todoapp.todoapp.Entity.Todo;
-import org.bson.types.ObjectId;
-import org.springframework.boot.autoconfigure.security.saml2.Saml2RelyingPartyProperties;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.mongodb.core.index.Index;
+import net.todoapp.todoapp.service.ToDoAppService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @Controller
+//@RestController
 //@RequestMapping("/tasks")
 public class AppController {
 
@@ -39,23 +37,42 @@ public class AppController {
     public String findTitle(Model model, @RequestParam("term") String term){
         model.addAttribute("tasks",toDoAppService.findTitleContaining(term));
         return "index";
-        //return toDoAppService.findTitleContaining(term);
+        //return toDoAppService.findTitleContaining(userIdterm);
     }*/
 
     @GetMapping(path = {"/","/search"})
     public String getIndexPage(Model model, String keyword){
-        //model.addAttribute("index", new Index());
-        //model.addAttribute("tasks",toDoAppService.getTodoList());
-        //return "index";
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println(authentication.getName());
         if(keyword!=null) {
             model.addAttribute("tasks",  toDoAppService.findTitleContaining(keyword));
         }else {
-            model.addAttribute("tasks", toDoAppService.getTodoList());}
+            model.addAttribute("tasks", toDoAppService.getTodoList(authentication.getName()));}
         return "index";
     }
 
 
+    @PostMapping("/insert")
+    public ResponseEntity<HttpStatus> addTodo(@RequestBody Todo todo){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println(authentication.getName());
+        try {
+            return toDoAppService.addTodo(authentication.getName(),todo);
+        }catch (Exception e){
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
+    }
+
+    /*
+    @GetMapping("/tasks")
+    public List<Todo> getTask(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println(authentication.getName());
+
+        return toDoAppService.getTodoList(authentication.getName());
+
+    }*/
 
 
 

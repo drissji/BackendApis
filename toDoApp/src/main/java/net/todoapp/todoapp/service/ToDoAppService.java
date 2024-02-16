@@ -1,7 +1,9 @@
 package net.todoapp.todoapp.service;
 
+import net.todoapp.todoapp.Entity.AppUser;
 import net.todoapp.todoapp.Entity.Todo;
 import net.todoapp.todoapp.repository.ToDoAppRepository;
+import net.todoapp.todoapp.repository.UserRepository;
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -20,13 +22,21 @@ import java.util.Optional;
 public class ToDoAppService {
 
     private final ToDoAppRepository toDoAppRepository;
+    private final UserRepository userRepository;
 
-    public ToDoAppService(ToDoAppRepository toDoAppRepository) {
+    public ToDoAppService(ToDoAppRepository toDoAppRepository, UserRepository userRepository) {
         this.toDoAppRepository = toDoAppRepository;
+        this.userRepository = userRepository;
     }
 
     //Add ToDo To DB
-    public ResponseEntity<HttpStatus> addTodo(Todo todo){
+    public ResponseEntity<HttpStatus> addTodo(String userName,Todo todo){
+
+        AppUser user = userRepository.findAppUserByUserName(userName);
+
+        List<Todo> userTasks = user.getUserTask();
+        userTasks.add(todo);
+        userRepository.save(user);
         toDoAppRepository.save(todo);
         return ResponseEntity.ok().body(HttpStatus.CREATED);
     }
@@ -43,12 +53,16 @@ public class ToDoAppService {
     }
 
     //Get TODO LIST
-    public List<Todo> getTodoList(){
-         List<Todo> todoList = toDoAppRepository.findAll();
+    public List<Todo> getTodoList(String userName){
+
+        AppUser user = userRepository.findAppUserByUserName(userName);
+        return user.getUserTask();
+
+       /* List<Todo> todoList = toDoAppRepository.findAll();
          if (todoList.isEmpty()){
              throw new NoSuchElementException("ToDo List Empty");
          }
-         return todoList;
+         return todoList;*/
     }
 
     //GET TODO BY id
@@ -59,6 +73,7 @@ public class ToDoAppService {
 
     //Modify TODO Status
 
+    /*
     public Optional<Todo> modifyStatus(ObjectId id, boolean status){
         Optional<Todo> todo = toDoAppRepository.findById(id.toString());
         todo.ifPresent(todo1 ->
@@ -68,7 +83,7 @@ public class ToDoAppService {
                }
                );
         return todo;
-    }
+    }*/
 
     //Modify TODO
 
@@ -104,7 +119,7 @@ public class ToDoAppService {
 
 
     //Modify TODO
-    public void modifyTodo(ObjectId id, String title, String description,boolean status, Date date) {
+    /*public void modifyTodo(ObjectId id, String title, String description,boolean status, Date date) {
 
         Optional<Todo> todo = toDoAppRepository.findById(id.toString());
         todo.ifPresent(todo1 ->
@@ -117,7 +132,7 @@ public class ToDoAppService {
                 }
         );
 
-    }
+    }*/
 
     //SORT TODO
     public List<Todo> getSortedTodoList(){
