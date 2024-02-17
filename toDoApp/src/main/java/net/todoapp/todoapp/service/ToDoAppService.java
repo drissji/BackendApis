@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ToDoAppService {
@@ -56,6 +57,7 @@ public class ToDoAppService {
     public List<Todo> getTodoList(String userName){
 
         AppUser user = userRepository.findAppUserByUserName(userName);
+        //List<Todo> tasks = userRepository.findUserTaskByUserName(userName);
         return user.getUserTask();
 
        /* List<Todo> todoList = toDoAppRepository.findAll();
@@ -139,16 +141,17 @@ public class ToDoAppService {
        return toDoAppRepository.findAll(Sort.by(Sort.Direction.ASC,"dueDate"));
     }
 
-
     //Find Containing a word
-    public List<Todo> findTitleContaining(String term){
-       return toDoAppRepository.findByTitleContaining(term);
+    public List<Todo> findTitleContaining(String term, String userName){
+        /*AppUser user = userRepository.findAppUserByUserName(userName);
+        return userRepository.findByUserTask_Title(term).stream()
+                .flatMap(user1 -> user1.getUserTask().stream())
+                .collect(Collectors.toList());*/
+        return toDoAppRepository.findByTitleContaining(term);
     }
 
     public List<Todo> findTodo(String title,boolean status){
         return toDoAppRepository.findByTitleAndIsCompleted(title,status);
     }
-
-
 
 }

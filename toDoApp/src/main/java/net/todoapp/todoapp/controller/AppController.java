@@ -19,12 +19,9 @@ import java.util.List;
 public class AppController {
 
     private final ToDoAppService toDoAppService;
-
-
     public AppController(ToDoAppService toDoAppService) {
         this.toDoAppService = toDoAppService;
     }
-
 
     /*@GetMapping("/")
     public String getIndexPage(Model model){
@@ -43,28 +40,26 @@ public class AppController {
     @GetMapping(path = {"/","/search"})
     public String getIndexPage(Model model, String keyword){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println(authentication.getName());
         if(keyword!=null) {
-            model.addAttribute("tasks",  toDoAppService.findTitleContaining(keyword));
+            model.addAttribute("tasks",  toDoAppService.findTitleContaining(keyword,authentication.getName()));
         }else {
             model.addAttribute("tasks", toDoAppService.getTodoList(authentication.getName()));}
-        return "index";
+        return "tasks";
     }
 
-
-    @PostMapping("/insert")
-    public ResponseEntity<HttpStatus> addTodo(@RequestBody Todo todo){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    @RequestMapping("/insert")
+    public String addTodo(){
+        /*Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         System.out.println(authentication.getName());
         try {
             return toDoAppService.addTodo(authentication.getName(),todo);
         }catch (Exception e){
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        }*/
+       return "insert_task_form";
 
     }
 
-    /*
     @GetMapping("/tasks")
     public List<Todo> getTask(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -72,9 +67,7 @@ public class AppController {
 
         return toDoAppService.getTodoList(authentication.getName());
 
-    }*/
-
-
+    }
 
 
 /*

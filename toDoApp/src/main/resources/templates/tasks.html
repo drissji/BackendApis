@@ -123,7 +123,7 @@
     <form th:action="@{/search}" method="get">
         <input type="text"  class="search-bar" placeholder="Search..." name="keyword" th:value="${keyword}">
         <button type="submit" class="filter-button color3" >Search</button>
-        <button type="submit" class="filter-button color3" >Reset</button>
+       <!-- <button type="submit" class="filter-button color3" >Reset</button>-->
     </form>
 
     <div th:if="${#lists.isEmpty(tasks)}">
@@ -144,7 +144,9 @@
             </div>
         </div>
     </div>
-
+    <form th:action="@{/insert}" method="post">
+        <button type="submit" class="filter-button color3">Add Task</button>
+    </form>
 
 </div>
 
