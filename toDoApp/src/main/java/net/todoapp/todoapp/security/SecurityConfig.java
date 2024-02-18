@@ -22,7 +22,7 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
-                loginAuth -> loginAuth.requestMatchers("/login","/error","/register","/insert").permitAll()
+                loginAuth -> loginAuth.requestMatchers("/login","/error","/register").permitAll()
                         .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
                 .formLogin(Customizer.withDefaults());

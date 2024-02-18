@@ -2,14 +2,14 @@ package net.todoapp.todoapp.controller;
 
 import net.todoapp.todoapp.Entity.AppUser;
 import net.todoapp.todoapp.Entity.Todo;
+import net.todoapp.todoapp.repository.ToDoAppRepository;
 import net.todoapp.todoapp.repository.UserRepository;
+import org.bson.types.ObjectId;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -20,9 +20,13 @@ public class ManageUserController {
     public final UserRepository userRepository;
     public final PasswordEncoder passwordEncoder;
 
-    public ManageUserController(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public final ToDoAppRepository toDoAppRepository;
+
+
+    public ManageUserController(UserRepository userRepository, PasswordEncoder passwordEncoder, ToDoAppRepository toDoAppRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.toDoAppRepository = toDoAppRepository;
     }
 
 
@@ -36,6 +40,12 @@ public class ManageUserController {
         return ResponseEntity.ok("saved");
     }
 
+
+    @GetMapping("/test/{username}/{key}")
+    public List<Todo> test(@PathVariable String username,@PathVariable String key){
+       AppUser user =  userRepository.findAppUserByUserName(username);
+        return toDoAppRepository.findByUserAndTitleContaining(user,key);
+    }
 
 
 }

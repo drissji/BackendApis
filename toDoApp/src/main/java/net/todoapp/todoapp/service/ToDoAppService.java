@@ -35,6 +35,8 @@ public class ToDoAppService {
 
         AppUser user = userRepository.findAppUserByUserName(userName);
 
+        todo.setUser(user);
+
         List<Todo> userTasks = user.getUserTask();
         userTasks.add(todo);
         userRepository.save(user);

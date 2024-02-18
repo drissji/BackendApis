@@ -35,6 +35,7 @@ public class AuthUserDetailsService implements UserDetailsService {
         List<Roles> roles = user.getAuthorities();
         Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
 
+
         roles.forEach(roles1 -> grantedAuthorities.add(new SimpleGrantedAuthority(roles1.getRoleName())));
 
 

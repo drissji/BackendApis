@@ -1,7 +1,10 @@
 package net.todoapp.todoapp.controller;
 
 
+import net.todoapp.todoapp.Entity.AppUser;
 import net.todoapp.todoapp.Entity.Todo;
+import net.todoapp.todoapp.repository.ToDoAppRepository;
+import net.todoapp.todoapp.repository.UserRepository;
 import net.todoapp.todoapp.service.ToDoAppService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +22,13 @@ import java.util.List;
 public class AppController {
 
     private final ToDoAppService toDoAppService;
-    public AppController(ToDoAppService toDoAppService) {
+    private final ToDoAppRepository toDoAppRepository;
+
+    private final UserRepository userRepository;
+    public AppController(ToDoAppService toDoAppService, ToDoAppRepository toDoAppRepository, UserRepository userRepository) {
         this.toDoAppService = toDoAppService;
+        this.toDoAppRepository = toDoAppRepository;
+        this.userRepository = userRepository;
     }
 
     /*@GetMapping("/")
@@ -37,28 +45,69 @@ public class AppController {
         //return toDoAppService.findTitleContaining(userIdterm);
     }*/
 
-    @GetMapping(path = {"/","/search"})
+    @GetMapping(path = {"/", "/search"})
     public String getIndexPage(Model model, String keyword){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
         if(keyword!=null) {
-            model.addAttribute("tasks",  toDoAppService.findTitleContaining(keyword,authentication.getName()));
+            AppUser userName = userRepository.findAppUserByUserName(authentication.getName());
+            model.addAttribute("tasks",  toDoAppRepository.findByUserAndTitleContaining(userName,keyword));
         }else {
             model.addAttribute("tasks", toDoAppService.getTodoList(authentication.getName()));}
         return "tasks";
     }
 
-    @RequestMapping("/insert")
-    public String addTodo(){
+    @GetMapping("/insert")
+    public String showInsertForm() {
+        return "insert_task_form";
+    }
+
+    @PostMapping("/add")
+    public String addTodo(@ModelAttribute Todo task, Model model) {
+        // Debugging - print received values
+        System.out.println("Received taskTitle: " + task.getTitle());
+        System.out.println("Received taskDescription: " + task.getDescription());
+
+        // Process the taskTitle and taskDescription as needed
+        // ...
+
+        // Redirect to the index page after processing
+        return "redirect:/";
+    }
+
+
+
+   /* @PostMapping("/insert")
+    public String addTodo(Model model) {
+        return "redirect:/insert";
+    }*/
+
+
+
+
+   /* @PostMapping("/insert")
+    public ResponseEntity<HttpStatus> addTodo(@RequestBody Todo todo){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        try {
+            return toDoAppService.addTodo(authentication.getName(),todo);
+        }catch (Exception e){
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }*/
+
+
+    /*@PostMapping("/insert")
+    public String addTodo(@RequestBody Todo todo){
         /*Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         System.out.println(authentication.getName());
         try {
             return toDoAppService.addTodo(authentication.getName(),todo);
         }catch (Exception e){
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }*/
-       return "insert_task_form";
+        }
 
-    }
+
+    }*/
 
     @GetMapping("/tasks")
     public List<Todo> getTask(){

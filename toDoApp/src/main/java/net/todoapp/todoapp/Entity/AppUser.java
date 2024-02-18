@@ -1,8 +1,11 @@
 package net.todoapp.todoapp.Entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.MongoId;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -11,15 +14,17 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+@Document
 public class AppUser implements UserDetails {
 
-    @Id
+    @MongoId
     ObjectId userId;
     String userName;
     String userPassword;
     List<Roles> userRoles;
-
-    @DBRef // Annotation to establish a MongoDB database reference
+    @DBRef
+    @JsonManagedReference
+    // Annotation to establish a MongoDB database reference
     List<Todo> userTask = new ArrayList<>();
 
 
