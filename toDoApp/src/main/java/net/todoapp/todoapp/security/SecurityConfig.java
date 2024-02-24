@@ -22,10 +22,10 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
-                loginAuth -> loginAuth.requestMatchers("/login","/error","/register").permitAll()
+                loginAuth -> loginAuth.requestMatchers("/error","/register","/signup").permitAll()
                         .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
-                .formLogin(Customizer.withDefaults());
+                .formLogin(form -> form.loginPage("/login").permitAll());
 
         return http.build();
 

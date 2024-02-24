@@ -20,6 +20,7 @@ public class AppUser implements UserDetails {
     @MongoId
     ObjectId userId;
     String userName;
+    //String userEmail;
     String userPassword;
     List<Roles> userRoles;
     @DBRef

@@ -57,6 +57,35 @@ public class AppController {
         return "tasks";
     }
 
+    //Custom login page
+    @GetMapping("/login")
+    public String login() {
+        return "login";
+    }
+
+    /*@GetMapping("/register")
+    public String register() {
+        return "register";
+    }*/
+/*
+    @GetMapping("/yes")
+    public String test() {
+        System.out.println("teeeeeeeTTTTeeeé");
+        return "register";
+    }*/
+
+    @GetMapping("/signup")
+    public String showSignupForm(Model model) {
+        model.addAttribute("user", new AppUser());
+        return "register";
+    }
+
+    @PostMapping("/signup")
+    public String processSignup(@ModelAttribute("user") AppUser user) {
+        System.out.println("djskldfjslkdjf");
+        return "register";
+    }
+
     @GetMapping("/insert")
     public String showInsertForm() {
         return "insert_task_form";
@@ -64,14 +93,8 @@ public class AppController {
 
     @PostMapping("/add")
     public String addTodo(@ModelAttribute Todo task, Model model) {
-        // Debugging - print received values
-        System.out.println("Received taskTitle: " + task.getTitle());
-        System.out.println("Received taskDescription: " + task.getDescription());
-
-        // Process the taskTitle and taskDescription as needed
-        // ...
-
-        // Redirect to the index page after processing
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        toDoAppService.addTodo(authentication.getName(), task);
         return "redirect:/";
     }
 
